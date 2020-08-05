@@ -1,6 +1,15 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
+import {
+  FlatList,
+  Text,
+  View,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import styled from 'styled-components';
+import { useQuery } from '@apollo/client';
+import { GET_POSTS } from '../constants';
+import PostItem from '../Components/Post/postItem';
 
 const PostsWrapper = styled(View)`
   flex: 1;
@@ -18,10 +27,44 @@ const PostsText = styled(Text)`
   color: black;
 `;
 
-function Posts() {
+function Posts({ navigation }) {
+  const { loading, data, refetch } = useQuery(GET_POSTS, {
+    pollInterval: 0,
+  });
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const handleRefresh = (refetch) => {
+    setRefreshing(true);
+
+    refetch().then(() => setRefreshing(false));
+  };
+
   return (
     <PostsWrapper>
-      <PostsText>Loading...</PostsText>
+      {loading && !refreshing ? (
+        <PostsText>Loading...</PostsText>
+      ) : (
+        <ScrollView
+          style={{ width: '100%' }}
+          refreshControl={(
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => handleRefresh(refetch)}
+            />
+          )}
+        >
+          <PostsList
+            data={data.posts}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <PostItem
+                item={item}
+                navigation={navigation}
+              />
+            )}
+          />
+        </ScrollView>
+      )}
     </PostsWrapper>
   );
 }
