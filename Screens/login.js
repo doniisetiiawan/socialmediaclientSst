@@ -1,8 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, AsyncStorage, Alert } from 'react-native';
 import styled from 'styled-components';
+import { useMutation } from '@apollo/client';
 import TextInput from '../Components/TextInput/textInput';
 import Button from '../Components/Button/button';
+import { LOGIN_USER } from '../constants';
 
 const LoginWrapper = styled(View)`
   flex: 1;
@@ -11,7 +13,8 @@ const LoginWrapper = styled(View)`
   justify-content: center;
 `;
 
-function Login() {
+function Login({ navigation }) {
+  const [loginUser, { loading }] = useMutation(LOGIN_USER);
   const [userName, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -29,7 +32,31 @@ function Login() {
         placeholder="Your password"
         textContentType="password"
       />
-      <Button title="Loading..." />
+      <Button
+        title={loading ? 'Loading...' : 'Login'}
+        onPress={() => {
+          loginUser({ variables: { userName, password } })
+            .then(({ data }) => {
+              const { token } = data.loginUser;
+
+              AsyncStorage.setItem('token', token).then(
+                () => {
+                  navigation.navigate('Main');
+                },
+              );
+            })
+            .catch((error) => {
+              if (error) {
+                Alert.alert(
+                  'Error',
+                  error.graphQLErrors.map(
+                    ({ message }) => message,
+                  )[0],
+                );
+              }
+            });
+        }}
+      />
     </LoginWrapper>
   );
 }

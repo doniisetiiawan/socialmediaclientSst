@@ -2,13 +2,15 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Button, Platform } from 'react-native';
+import { Button, Platform, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AuthLoading from './Screens/authLoading';
 import Login from './Screens/login';
 import Posts from './Screens/posts';
 import Settings from './Screens/settings';
 import AddPost from './Screens/addPost';
+import Notifications from './Screens/notifications';
+import Post from './Screens/post';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,12 +24,29 @@ function PostsStack({ navigation }) {
         options={{
           title: 'All Posts',
           headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate('AddPost')}
-              title="Add Post"
-            />
+            <View style={{ marginRight: 13 }}>
+              <Button
+                onPress={() => navigation.navigate('AddPost')}
+                title="Add Post"
+              />
+            </View>
           ),
           headerLeft: null,
+        }}
+      />
+      <Stack.Screen
+        name="Post"
+        component={Post}
+        options={{
+          title: 'Post',
+          headerRight: () => (
+            <View style={{ marginRight: 13 }}>
+              <Button
+                onPress={() => navigation.navigate('AddPost')}
+                title="Add Post"
+              />
+            </View>
+          ),
         }}
       />
     </Stack.Navigator>
@@ -39,7 +58,7 @@ function NotificationsStack() {
     <Stack.Navigator>
       <Stack.Screen
         name="Notifications"
-        component={Posts}
+        component={Notifications}
         options={{
           title: 'Notifications',
           headerLeft: null,

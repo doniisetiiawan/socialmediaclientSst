@@ -26,6 +26,7 @@ const UserName = styled(Text)`
 `;
 
 function PostContent({ item }) {
+  console.log(item.userName);
   return (
     <PostContentWrapper>
       <PostContentThumbnail source={{ uri: item.image }} />

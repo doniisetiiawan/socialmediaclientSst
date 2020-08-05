@@ -17,8 +17,8 @@ const AuthLoadingText = styled(Text)`
 function AuthLoading({ navigation }) {
   React.useEffect(() => {
     AsyncStorage.getItem('token').then((value) => {
-      // navigation.navigate(value ? 'Main' : 'Login');
-      navigation.navigate(value ? 'Main' : 'Main');
+      navigation.navigate(value ? 'Main' : 'Login');
+      // navigation.navigate(value ? 'Main' : 'Main');
     });
   }, [navigation]);
 
